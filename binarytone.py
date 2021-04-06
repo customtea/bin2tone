@@ -1,3 +1,5 @@
+### Reference https://news.mynavi.jp/article/zeropython-55/
+
 import pyaudio
 import numpy as np
 
