@@ -2,33 +2,29 @@
 
 import pyaudio
 import numpy as np
+import sys
 
-# サンプリングレートを定義 --- (*1)
 RATE = 44100
-
-# BPMや音長を定義 --- (*2)
 BPM = 100
 L1 = (60 / BPM * 4)
 L2,L4,L8 = (L1/2,L1/4,L1/8)
 
-# ドレミ...の周波数を定義 --- (*3)
 C,D,E,F,G,A,B,C2 = (
         261.626, 293.665, 329.628, 
         349.228, 391.995, 440.000,
         493.883, 523.251)
 
-# サイン波を生成 --- (*4)
+
 def tone(freq, length, gain):
     slen = int(length * RATE)
     t = float(freq) * np.pi * 2 / RATE
     return np.sin(np.arange(slen) * t) * gain
 
-# 再生 --- (*5)
+
 def play_wave(stream, samples):
     stream.write(samples.astype(np.float32).tobytes())
 
 
-# 出力用のストリームを開く --- (*6)
 p = pyaudio.PyAudio()
 stream = p.open(format=pyaudio.paFloat32,
                 channels=1,
@@ -37,9 +33,12 @@ stream = p.open(format=pyaudio.paFloat32,
                 output=True)
 
 
-print("play")
 
-f = open("./gnss_result.bin",'rb')
+print("play")
+if len(sys.argv) != 2:
+    sys.exit()
+
+f = open(sys.argv[1],'rb')
 while(True):
     data = f.read(1)
     if len(data) == 0:
